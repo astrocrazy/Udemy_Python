@@ -6,23 +6,27 @@ from difflib import get_close_matches
 data = json.load(open("data.json"))
 
 def definition(w):
-       w = w.lower()
-       match = get_close_matches(w,data.keys(),cutoff = 0.8)
+       #w = w.lower()
+       
 
        if w in data:
            return data[w]
-       elif len(match) > 0:
-           yn =  input("Did you mean %s instead? Enter Y if yes, N if no:  " % match[0])
-           if str.islower(yn): yn = str.swapcase(yn)
-
-           if yn == "Y":
-                return data[match[0]]
-           elif yn == "N":
-                return "The word doesnt exit. Please enter another word"
+       else: #takes care of most exceptions
+           if w.title() in data: #capitalised letters
+               return data[w.title()]
            else:
-                return "We do not understand"
-       else:
-           return "The word doesnt exit. Please enter another word"
+               match = get_close_matches(w,data.keys(),cutoff = 0.8)
+               if len(match) > 0: #similar words
+                   yn =  input("Did you mean %s instead? Enter Y if yes, N if no:  " % match[0])
+                   if str.islower(yn): yn = str.swapcase(yn)
+
+                   if yn == "Y":
+                       return data[match[0]]
+                   elif yn != "N":
+                       return "We do not understand"
+                   else:
+                       return "The word doesnt exit. Please enter another word"
+
           
 word = input("Enter word: ")
 
